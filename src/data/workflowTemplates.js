@@ -51,11 +51,11 @@ export const workflowTemplates = [
       }),
     ],
     edges: [
-      { id: 'e-start-task', source: 'start-1', target: 'task-1' },
-      { id: 'e-start-approval', source: 'start-1', target: 'approval-1' },
-      { id: 'e-task-automated', source: 'task-1', target: 'automated-1' },
-      { id: 'e-approval-automated', source: 'approval-1', target: 'automated-1' },
-      { id: 'e-automated-end', source: 'automated-1', target: 'end-1' },
+      { id: 'e-start-task', source: 'start-1', target: 'task-1', type: 'labeled', data: { label: 'Begin docs' } },
+      { id: 'e-start-approval', source: 'start-1', target: 'approval-1', type: 'labeled', data: { label: 'Request approval' } },
+      { id: 'e-task-automated', source: 'task-1', target: 'automated-1', type: 'labeled', data: { label: 'Docs verified' } },
+      { id: 'e-approval-automated', source: 'approval-1', target: 'automated-1', type: 'labeled', data: { label: 'Approved' } },
+      { id: 'e-automated-end', source: 'automated-1', target: 'end-1', type: 'labeled', data: { label: 'Provisioned' } },
     ],
   },
   {
@@ -96,10 +96,10 @@ export const workflowTemplates = [
       }),
     ],
     edges: [
-      { id: 'e-start-task', source: 'start-1', target: 'task-1' },
-      { id: 'e-task-approval', source: 'task-1', target: 'approval-1' },
-      { id: 'e-approval-automated', source: 'approval-1', target: 'automated-1' },
-      { id: 'e-automated-end', source: 'automated-1', target: 'end-1' },
+      { id: 'e-start-task', source: 'start-1', target: 'task-1', type: 'labeled', data: { label: 'Submit' } },
+      { id: 'e-task-approval', source: 'task-1', target: 'approval-1', type: 'labeled', data: { label: 'Reviewed' } },
+      { id: 'e-approval-automated', source: 'approval-1', target: 'automated-1', type: 'labeled', data: { label: 'Approved' } },
+      { id: 'e-automated-end', source: 'automated-1', target: 'end-1', type: 'labeled', data: { label: 'Notified' } },
     ],
   },
   {
@@ -139,11 +139,11 @@ export const workflowTemplates = [
       }),
     ],
     edges: [
-      { id: 'e-start-task', source: 'start-1', target: 'task-1' },
-      { id: 'e-start-auto', source: 'start-1', target: 'automated-1' },
-      { id: 'e-task-approval', source: 'task-1', target: 'approval-1' },
-      { id: 'e-auto-approval', source: 'automated-1', target: 'approval-1' },
-      { id: 'e-approval-end', source: 'approval-1', target: 'end-1' },
+      { id: 'e-start-task', source: 'start-1', target: 'task-1', type: 'labeled', data: { label: 'Review' } },
+      { id: 'e-start-auto', source: 'start-1', target: 'automated-1', type: 'labeled', data: { label: 'Auto-gen' } },
+      { id: 'e-task-approval', source: 'task-1', target: 'approval-1', type: 'labeled', data: { label: 'Checked' } },
+      { id: 'e-auto-approval', source: 'automated-1', target: 'approval-1', type: 'labeled', data: { label: 'Package ready' } },
+      { id: 'e-approval-end', source: 'approval-1', target: 'end-1', type: 'labeled', data: { label: 'Signed off' } },
     ],
   },
 ];

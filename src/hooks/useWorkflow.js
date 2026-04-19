@@ -48,7 +48,7 @@ function createStateFromTemplate(template) {
   return {
     nodes,
     edges,
-    selectedNodeId: nodes[0]?.id || null,
+    selectedNodeId: null,
     activeTemplateId: template.id,
     validation: validateWorkflow(nodes, edges),
   };
@@ -116,8 +116,16 @@ function isTransientNodeChange(change) {
 
 const initialTemplateState = createStateFromTemplate(defaultWorkflowTemplate);
 
+function pushHistory(state) {
+  const newPast = [...state.past, { nodes: clone(state.nodes), edges: clone(state.edges) }];
+  if (newPast.length > 50) newPast.shift();
+  return { past: newPast, future: [] };
+}
+
 export const useWorkflow = create((set) => ({
   ...initialTemplateState,
+  past: [],
+  future: [],
   workflowTemplates,
   automationActions: [],
   automationLoading: false,
@@ -211,6 +219,8 @@ export const useWorkflow = create((set) => ({
           ...connection,
           id: `e-${connection.source}-${connection.target}-${state.edges.length + 1}`,
           animated: sourceNode.type === NODE_TYPES.AUTOMATED,
+          type: 'labeled',
+          data: { label: '' },
         },
         state.edges,
       );
@@ -264,6 +274,8 @@ export const useWorkflow = create((set) => ({
                 source: selectedNode.id,
                 target: node.id,
                 animated: selectedNode.type === NODE_TYPES.AUTOMATED,
+                type: 'labeled',
+                data: { label: '' },
               },
               state.edges,
             );
@@ -325,7 +337,41 @@ export const useWorkflow = create((set) => ({
     set(() => ({
       ...createStateFromTemplate(defaultWorkflowTemplate),
       lastSimulation: null,
+      past: [],
+      future: []
     })),
+
+  saveHistory: () => set((state) => pushHistory(state)),
+
+  undo: () =>
+    set((state) => {
+      if (state.past.length === 0) return {};
+      const prev = state.past[state.past.length - 1];
+      const newPast = state.past.slice(0, state.past.length - 1);
+      return {
+        past: newPast,
+        future: [{ nodes: clone(state.nodes), edges: clone(state.edges) }, ...state.future],
+        nodes: prev.nodes,
+        edges: prev.edges,
+        selectedNodeId: null,
+        validation: validateWorkflow(prev.nodes, prev.edges),
+      };
+    }),
+
+  redo: () =>
+    set((state) => {
+      if (state.future.length === 0) return {};
+      const next = state.future[0];
+      const newFuture = state.future.slice(1);
+      return {
+        past: [...state.past, { nodes: clone(state.nodes), edges: clone(state.edges) }],
+        future: newFuture,
+        nodes: next.nodes,
+        edges: next.edges,
+        selectedNodeId: null,
+        validation: validateWorkflow(next.nodes, next.edges),
+      };
+    }),
 
   selectNode: (nodeId) => set({ selectedNodeId: nodeId }),
 
@@ -368,4 +414,22 @@ export const useWorkflow = create((set) => ({
     }),
 
   setLastSimulation: (lastSimulation) => set({ lastSimulation }),
+
+  loadWorkflow: (nodes, edges, activeTemplateId = 'custom') => 
+    set({
+      nodes: stripNodeMeta(nodes),
+      edges,
+      selectedNodeId: null,
+      activeTemplateId,
+      validation: validateWorkflow(nodes, edges)
+    }),
+
+  updateEdgeLabel: (edgeId, label) =>
+    set((state) => ({
+      edges: state.edges.map((edge) =>
+        edge.id === edgeId
+          ? { ...edge, data: { ...edge.data, label } }
+          : edge,
+      ),
+    })),
 }));

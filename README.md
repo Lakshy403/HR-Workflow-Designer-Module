@@ -69,7 +69,9 @@ npm run preview
 - Validation was kept centralized instead of scattered across components so the rules stay easy to extend.
 - The canvas drag logic was intentionally optimized to avoid recomputing heavy state on every mouse move, which prevents white-screen crashes while moving cards.
 
-## What Was Completed
+## What they completed vs. what they would add with more time
+
+### What Was Completed
 
 - Drag-and-drop workflow canvas using React Flow
 - Start, task, approval, automated, and end node types
@@ -83,13 +85,14 @@ npm run preview
 - Auto-layout / auto-arrange support
 - Dashboard-style insights panel
 - Fix for canvas white-screen behavior during node dragging
+- Export and Import workflow JSON state
+- Undo and redo history functionality with state checkpointing
+- Dual theme support (Dark and Light modes) with glassmorphic aesthetic architecture
 
-## What I Would Add With More Time
+### What I Would Add With More Time
 
 - Persistent backend storage for workflows
-- Export/import support with schema validation
 - Branch conditions on edges such as approve/reject/fallback
-- Undo/redo history with selective checkpoints
 - Collaborative editing or presence indicators
 - More advanced auto-layout using a dedicated layout engine such as ELK or Dagre
 - Better test coverage with unit tests and end-to-end interaction tests
